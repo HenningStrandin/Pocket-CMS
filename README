@@ -1,0 +1,188 @@
+================================================================================
+POCKET-CMS
+================================================================================
+
+DESCRIPTION
+-----------
+Pocket-CMS is a web content management system made up of less than 200 lines of
+Perl code in a CGI script (plus a couple of libraries). Web pages are the output
+of Perl functions provided by content files. It uses no sessions and visitors
+are given no cookies by default. It provides no special means for logging or
+analyzing traffic and doesn't aid with SEO.
+
+Pocket-CMS comes with a blogging module (162 lines of code) with no feedback
+functionality and no built-in way to analyze traffic. It does paginate and
+create an index, though. It also serves as an example of a dynamic web page.
+
+Example site: https://henningstrandin.com
+
+FEATURES
+--------
+- File-based content storage.
+- Dynamic menu generation from file names.
+- Simple subpage and submenu support.
+- Content is dynamic by default.
+- Uses Text::Xslate for page templates.
+- Styling with CSS.
+- Pages can be visible or hidden.
+- No built-in analytics.
+- No built-in SEO support.
+- A healthy "don't care" attitude.
+
+REQUIREMENTS
+------------
+- Perl 5.x
+- Perl modules:
+  - CGI::Tiny
+  - Text::Xslate
+  - File::Slurp (used in some content modules)
+
+INSTALLATION
+------------
+1. Clone or download this repository.
+2. Ensure Perl and the required modules are installed.
+3. Ensure your web server executes *.cgi files as CGI scripts in the
+directory where you place the Pocket-CMS files.
+4. Move the Pocket-CMS files there.
+5. Make index.cgi and next-ID.pl executable.
+
+DIRECTORY STRUCTURE
+-------------------
+.
+├── cnt
+│   ├── 0--0000--T--050--Example   # Example first page.
+│   ├── 0--0001--T--100--The_Blog  # The blog module.
+│   └── blog
+│       └── 0--en--2000-01-01--Example_blog_entry.html
+├── images
+│   ├── globe_clock.jpg
+│   └── Pocket-CMS-logo.jpg
+├── index.cgi
+├── index.tmpl
+├── main_style.css
+├── new_page_template.txt
+├── next-ID.pl  # Run this before creating a new page.
+└── README
+
+CONTENT FILES
+-------------
+
+* FILE NAMES
+
+Content files in the "cnt/" directory follow this naming convention:
+[L]--[ID]--[PAR-ID]--[order]--[name]
+
+L:      0 if visible, 1 if hidden behind "login."
+ID:     Unique ID for page.
+PAR-ID: ID of parent page if a subpage, "T" otherwise.
+ORDER:  Place in menu ordering.
+NAME:   Name of the page displayed in menu.
+
+* CREATING A NEW WEB PAGE
+
+Run ./next-ID.pl to get next free page ID and current top-level menu ordering.
+
+Use new_page_template.txt to start creating a new page.
+
+Each content file defines a subroutine named "page_content". The page_content
+subroutine receives the following when called by the main script:
+
+- Request parameters and cookies
+- Name of calling script
+- The ID of this page
+- The ID of the requested sub-page of this page
+- User "logged in" status
+- Path to main content folder
+
+The page_content subroutine should return the following data structure:
+
+$pnc{'p_cont'}{'title'}                       Title shown in window title bar.
+$pnc{'p_cont'}{'head'}                        Main page header.
+$pnc{'p_cont'}{'style'}                       CSS code in HTML header.
+$pnc{'p_cont'}{'javascript'}                  Javascript in HTML header.
+$pnc{'p_cont'}{'js_src'}                      Javascript source file to be
+                                              loaded.
+$pnc{'p_cont'}{'center_content'}              Page body HTML content.
+
+$pnc{'submenu'}[[ORDER]]{'name'}              Name of submenu entry.
+$pnc{'submenu'}[[ORDER]]{'ID'}                ID of subpage. (Local to this
+                                              parent page.)
+$pnc{'submenu'}[[ORDER]]{'locked'}            Set to 1 if this page is hidden
+                                              behind "login." [ORDER] is a
+                                              positive integer menu position.
+$pnc{'current_sub'}                           ID of current subpage.
+
+$pnc{'cookies'}{'[COOKIE_NAME]'}{'value'}     Value of the cookie COOKIE_NAME to
+                                              be set.
+$pnc{'cookies'}{'[COOKIE_NAME]'}{'expires'}   Expiration time of cookie
+                                              COOKIE_NAME to set.
+
+AUTHENTICATION -- NO SUCH THING!
+--------------------------------
+Pages can be hidden from regular visitors and displayed only when the "password"
+is entered. This is meant as a staging area and for the convenience of the
+visitors, it's not secure in any way what so ever. Control the visibility of the
+page with the leading 0 or 1 of the file name.
+
+TEMPLATING
+----------
+Pocket-CMS uses Text::Xslate to render pages using the "index.tmpl" template.
+See the provided "index.tmpl" for names of placeholders.
+
+USAGE
+-----
+1. Run ./next-ID.pl to get next free page ID and current top-level menu
+   ordering, and be reminded of content file naming rules.
+2. Give a copy of new_page_template.txt the name of the new content file.
+   Start file name with "1" if you want to hide this page until it's ready.
+3. Put the new content file under cnt/.
+4. Create the content. (Emacs is a great content creation UI for Pocket-CMS.)
+5. Test and review your new page.
+6. Make the page visible by changing the file name, if required.
+
+EXAMPLE CONTENT FILE
+--------------------
+sub page_content {
+    my %pnc;
+    
+    $pnc{'p_cont'}{'title'} = q{Pocket-CMS Example Page};
+    $pnc{'p_cont'}{'head'} = q{Pocket-CMS Example Page};
+
+    $pnc{'p_cont'}{'center_content'} = q{
+        <p>This is an example web page delivered by Pocket-CMS.</p>
+
+        <div style="float: right; padding: 10px;">
+            <img src="images/Pocket-CMS-logo.jpg" alt="Pocket-CMS logo"
+                style="width: 200px; border-radius: 8px;">
+        </div>
+
+        <p>Pocket-CMS was quaintly hand-coded without AI-assistance.</p>
+
+        <p>Pocket-CMS comes with a blogging module!</p>
+    };
+    
+    return (\%pnc);
+}
+1;
+
+NOTES
+-----
+- No notes at this point.
+
+LICENSE
+-------
+Copyright (C) 2020 Henning Strandin (henning.strandin@proton.me)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+See <https://www.gnu.org/licenses/>.
+
+================================================================================

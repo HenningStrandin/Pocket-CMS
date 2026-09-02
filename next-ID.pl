@@ -20,6 +20,11 @@
 #
 # See <https://www.gnu.org/licenses/>.
 
+# ----- USAGE -----
+#
+# Run this script before creating a new web page to see the next
+# free page ID and the top-level menu order of existing pages.
+
 use strict;
 
 my $cnt_dir = shift;
