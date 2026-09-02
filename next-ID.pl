@@ -1,10 +1,10 @@
 #!/usr/bin/perl
 
-# ----- POCKET-CMS -----
+# ----- POCKET-CMS v. 1 -----
 #
 # A tiny web content management system.
 #
-# Homepage: <GitHub repo>
+# Homepage: https://github.com/HenningStrandin/Pocket-CMS
 #
 # Copyright (C) 2020 Henning Strandin (henning.strandin@proton.me)
 #
