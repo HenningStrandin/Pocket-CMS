@@ -84,8 +84,8 @@ Run ./next-ID.pl to get next free page ID and current top-level menu ordering.
 
 Use new_page_template.txt to start creating a new page.
 
-Each content file defines a subroutine named "page_content". The page_content
-subroutine receives the following when called by the main script:
+Each content file defines a Perl subroutine named "page_content". The
+page_content subroutine receives the following when called by the main script:
 
 - Request parameters and cookies
 - Name of calling script
