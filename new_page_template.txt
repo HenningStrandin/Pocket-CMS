@@ -1,0 +1,60 @@
+# ----- POCKET-CMS -----
+#
+# A tiny web content management system.
+#
+# Homepage: <GitHub repo>
+#
+# Copyright (C) 2020 Henning Strandin (henning.strandin@proton.me)
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# See <https://www.gnu.org/licenses/>.
+
+sub page_content {
+    my $cgi = shift;       # Request parameters and cookies. (See CGI::Tiny for doc.)
+    my $caller = shift;    # Name of calling script.
+    my $me = shift;        # The ID of this page.
+    my $sub_ID = shift;    # The ID of the sub-page to this page that was requested.
+    my $logged_in = shift; # 0: user not logged, 1: user logged in.
+    my $cnt_path = shift;  # Path to main content folder, relative to $caller.
+    my %pnc;               # Data that is returned to $caller. (See below.)
+
+    ### DO STUFF ###
+    
+    return (\%pnc);
+}
+1;
+
+
+__END__
+
+Data structure returned to main script:
+
+-- GENERATED PAGE CONTENT ---
+$pnc{'p_cont'}{'title'}                       Title shown in window title bar.
+$pnc{'p_cont'}{'head'}                        Main page header.
+$pnc{'p_cont'}{'style'}                       CSS code in HTML header.
+$pnc{'p_cont'}{'javascript'}                  Javascript in HTML header.
+$pnc{'p_cont'}{'js_src'}                      Javascript source file to be loaded.
+$pnc{'p_cont'}{'center_content'}              Page body HTML content, 500px wide.
+
+--- GENERATED SUBMENU ---
+$pnc{'submenu'}[[ORDER]]{'name'}              Name of submenu entry.
+$pnc{'submenu'}[[ORDER]]{'ID'}                ID of subpage. (Local to this parent page.)
+$pnc{'submenu'}[[ORDER]]{'locked'}            Set to 1 if this page requires login.
+                                              [ORDER] is a positive integer menu position.
+$pnc{'current_sub'}                           ID of current subpage.
+
+--- COOKIE DIRECTIVES ---
+$pnc{'cookies'}{'[COOKIE_NAME]'}{'value'}     Value of the cookie COOKIE_NAME to be set.
+$pnc{'cookies'}{'[COOKIE_NAME]'}{'expires'}   Expiration time of cookie COOKIE_NAME to set.
+                                              (Use 0 for session cookie and
+                                              CGI::Tiny::epoch_to_date(0) to delete cookie.)

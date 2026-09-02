@@ -1,0 +1,240 @@
+# ----- POCKET-CMS -----
+#
+# A tiny web content management system.
+#
+# Homepage: <GitHub repo>
+#
+# Copyright (C) 2020 Henning Strandin (henning.strandin@proton.me)
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# See <https://www.gnu.org/licenses/>.
+
+sub page_content {
+    use strict;
+    use File::Slurp;
+    
+    my $cgi = shift;          # Request parameters and cookies. (See CGI::Tiny for doc.)
+    my $caller = shift;       # Name of calling script.
+    my $me = shift;           # The ID of this page.
+    my $sub_ID = shift;       # The ID of the sub-page to this page that was requested.
+    my $logged_in = shift;    # User logged in status (0 or 1).
+    my $cnt_path = shift;     # Path to main content folder, relative to $caller.
+    my %pnc;                  # Data that is returned to $caller. (See below.)
+
+    my $page_size = 4;        # Number of blog entries per page.
+    my $pdf_prefix = "blog_"; # All PDF versions of blog entries start with this string.
+	                      # Full name of PDF must be '<pdf prefix><name of blog entry>.pdf'.
+    
+    ### CREATE BLOG CONTENT DATA STRUCTURE FROM FILES ###
+    my @blog_files = glob("$cnt_path/blog/*.html");
+    my %blog;
+    my %name_to_ID;
+    foreach my $bf (@blog_files){
+	my ($blog_file) = $bf =~ /\/([^\/]*)$/;
+	my ($locked, $lang, $date, $name) = split(/--/, $blog_file);
+	next if ($locked && !$logged_in);
+	($name) = $name =~ /(.*)\.html$/;
+	$name =~ s/_/ /g;
+	$name =~ s/-c-/: /g;
+	$name =~ s/-q-/\'/g;
+	$name =~ s/-qq-/\"/g;
+	$name =~ s/-lp-/\(/g;
+	$name =~ s/-rp-/\)/g;
+	$name =~ s/\+ex\+/\!/g;
+	my $key = $date;
+	$key =~ s/-//g;
+	
+	$blog{$key}{'locked'} = $locked;
+	$blog{$key}{'lang'} = $lang;
+	$blog{$key}{'date'} = $date;
+	$blog{$key}{'name'} = $name;
+	$blog{$key}{'file'} = $blog_file;
+
+	$name_to_ID{$name} = $key;
+    }
+
+    ### CREATE BLOG PAGES ###
+    my @blog_pages;
+    my %blog_ID_to_page_order;
+    my $blog_p = 0;
+    my $entry_count = 0;
+    foreach my $be (sort {$a <=> $b} keys %blog){
+	push(@{$blog_pages[$blog_p]}, $be);
+	$blog_ID_to_page_order{$be} = $blog_p;
+	$entry_count++;
+	if ($entry_count == $page_size){
+	    $blog_p++;
+	    $entry_count = 0;
+	}
+    }
+
+    ### CREATE SUBMENU ###
+    $pnc{'submenu'}[0]{'name'} = "Index";
+    $pnc{'submenu'}[0]{'ID'} = 'Index';
+    $pnc{'submenu'}[0]{'locked'} = 0;
+    for (my $i = @blog_pages - 1; $i >= 0; $i--){
+	my ($m_name) = $blog{$blog_pages[$i][-1]}{'date'} =~ /^\d\d(.*)/;
+	$pnc{'submenu'}[((@blog_pages - 1) - $i) + 1]{'name'} = $m_name . "&darr;";
+	$pnc{'submenu'}[((@blog_pages - 1) - $i) + 1]{'ID'} = 'P' . $i;
+	$pnc{'submenu'}[((@blog_pages - 1) - $i) + 1]{'locked'} = 0;
+    }	
+
+    ### GENERATE INDEX PAGE IF REQUESTED ###
+    my $current_sub;
+    my $js_go_to_anchor;
+    my $blog_body;
+    if ($sub_ID eq 'Index'){
+	$current_sub = $sub_ID;
+
+	$blog_body = "<div style=\"font-family: Monospace; font-size: 1.1em; font-weight: bold;\">INDEX (A - Z)</div>\n";
+	$blog_body .= "<p style=\"font-size: 1.1em; line-height: 190%\">";
+	foreach my $bn (sort keys %name_to_ID){
+	    $blog_body .= "- <a href=\"" . $caller . "?page=" . $me . "&subpage=" . $bn . "\">" . $bn . "</a><br>\n";
+	}
+	$blog_body .= "</p>";
+	$blog_body .= "<hr>";
+    }
+    else {
+    
+	### SET CURRENT SUBPAGE ID (AND ORDER) DEPENDING ON WHAT SUB_ID (IF ANY) WAS SENT ###
+	my %page_ID_to_order;
+	for (my $i = 0; $i < @blog_pages; $i++){
+	    $page_ID_to_order{'P' . $i} = $i;
+	}
+	
+	if (defined($name_to_ID{$sub_ID})){
+	    $current_sub = 'P' . $blog_ID_to_page_order{$name_to_ID{$sub_ID}};
+	    $js_go_to_anchor =
+		"function go_to_post(ID)
+                 {
+                     window.location.hash=ID; 
+                 }
+                 window.onload = go_to_post(\"$sub_ID\");";
+	}
+	elsif (!defined($sub_ID) || !defined($page_ID_to_order{$sub_ID}) || !defined($blog_pages[$page_ID_to_order{$sub_ID}])){
+	    $current_sub = 'P' . (@blog_pages - 1);
+	}
+	else {
+	    $current_sub = $sub_ID;
+	}	
+	my ($current_sub_order) = $page_ID_to_order{$current_sub};
+	
+	### POPULATE PAGE BODY ###
+	$blog_body = "<span style=\"font-size: 1.1em; font-family: Monospace; font-weight: bold; line-height: 140%;\">ON THIS PAGE</span>\n";
+	$blog_body .= "<p style=\"font-size: 1em\">\n";
+	for (my $i = @{$blog_pages[$current_sub_order]} - 1; $i >=0; $i--){
+	    $blog_body .= "<a href=\"#" . $blog{$blog_pages[$current_sub_order][$i]}{'name'} . "\"> - " . $blog{$blog_pages[$current_sub_order][$i]}{'name'} . "</a><br>\n";
+	}
+	$blog_body .= "</p>\n";
+	$blog_body .= "<hr>\n";
+	for (my $i = @{$blog_pages[$current_sub_order]} - 1; $i >= 0; $i--){
+	    my $pdf_file = $pdf_prefix .  $blog{$blog_pages[$current_sub_order][$i]}{'name'} . ".pdf";
+	    $pdf_file =~ s/\(/-lp-/g;
+	    $pdf_file =~ s/\)/-rp-/g;
+	    $pdf_file =~ s/\: /-c-/g;
+	    $pdf_file =~ s/\'/-q-/g;
+	    $pdf_file =~ s/\"/-qq-/g;
+	    $pdf_file =~ s/\!/\+ex\+/g;
+	    $pdf_file =~ s/ /_/g;
+
+	    my $pdf_path = "$cnt_path/blog/$pdf_file";
+	    my $pdf_html = "";
+	    if (-e $pdf_path) {
+		$pdf_html = "<a href=\"$pdf_path\" target=\"_blank\">[PDF]</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+	    }
+	    
+	    $blog_body .= "<h1><a name=\"" . $blog{$blog_pages[$current_sub_order][$i]}{'name'} . "\"></a>" . $blog{$blog_pages[$current_sub_order][$i]}{'name'} . "</h1>\n";
+	    $blog_body .= "<span style=\"font-size: 1em;\">$blog{$blog_pages[$current_sub_order][$i]}{'date'}</span><span style=\"font-family: Monospace; font-size: 1.2em; font-weight: bold;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+	    $blog_body .= $pdf_html;
+	    $blog_body .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"" . $caller . "?page=" . $me . "&subpage=" . $blog{$blog_pages[$current_sub_order][$i]}{'name'} . "\">[PERMANENT LINK]</a></span><br>\n";
+	    $blog_body .= "<br>\n";
+	    $blog_body .= read_file("$cnt_path/blog/$blog{$blog_pages[$current_sub_order][$i]}{'file'}") . "\n";
+	    $blog_body .= "<div style=\"font-family: Monospace; font-size: 1.2em; font-weight: bold; text-align: center;\"><a href=\"#\">[UP]</a></div>\n";
+	    $blog_body .= "<br>\n<hr style=\"width:50%;\"><br>\n\n";
+	}
+	
+	if ($current_sub_order == 0){
+	    $blog_body .= "<div style=\"font-family: Monospace; font-size: 1.2em; font-weight: bold; text-align: center;\"><a href=\"" . $caller . "?page=" . $me . "\">[HOME]</a></div>\n";
+	}
+	else {
+	    $blog_body .= "<div style=\"font-family: Monospace; font-size: 1.2em; font-weight: bold; text-align: center;\"><a href=\"" . $caller . "?page=" . $me . "&subpage=P" . ($current_sub_order - 1) . "\">[NEXT]</a></div>\n";
+	}
+    }
+    
+    ### SET COMMON PAGE PARAMETERS AND RETURN PAGE ###
+    $pnc{'p_cont'}{'title'} = 'Pocket-CMS Blog';
+    $pnc{'p_cont'}{'head'} = 'The Blog';
+    $pnc{'p_cont'}{'javascript'} = $js_go_to_anchor if defined($js_go_to_anchor);
+    $pnc{'p_cont'}{'center_content'} = $blog_body;
+    $pnc{'current_sub'} = $current_sub;
+    
+    return (\%pnc);
+}
+1;
+
+
+__END__
+
+    ### SHOW DATASTRUCTURES (DEBUG) ###
+    my $blog_body;
+    foreach my $be (sort {$b <=> $a} keys %blog){
+	$blog_body .= "** Blog key: " . $be . "<br>\n";
+	foreach my $ev (sort keys %{$blog{$be}}){
+	    $blog_body .= "Param " . $ev . " is " . $blog{$be}{$ev} . "<br>\n";
+	}
+	$blog_body .= "<br>\n";
+    }
+
+    $blog_body .= "<hr>\n";
+
+    for (my $i = 0; $i < @blog_pages; $i++){
+	$blog_body .= "** Blog page no.: " . $i . "<br>\n";
+	for (my $j = 0; $j < @{$blog_pages[$i]}; $j++){
+	    $blog_body .= "Entry no.: " . $j . " is " . $blog_pages[$i][$j] . "<br>\n";
+	}
+	$blog_body .= "<br>\n";
+    }
+	    
+    $blog_body .= "<hr>\n";
+
+    for (my $i = 0; $i < @{$pnc{'submenu'}}; $i++){
+	$blog_body .= "** Menu order: " . $i . "<br>\n";
+	foreach my $me (sort keys %{$pnc{'submenu'}[$i]}){
+	    $blog_body .= $me . ": " . $pnc{'submenu'}[$i]{$me} . "<br>\n";
+	}	    
+	$blog_body .= "<br>\n";
+    }	
+    
+
+
+Data structure returned to main script:
+
+-- GENERATED PAGE CONTENT ---
+$pnc{'p_cont'}{'title'}                       Title shown in window title bar.
+$pnc{'p_cont'}{'head'}                        Main page header.
+$pnc{'p_cont'}{'style'}                       CSS code in HTML header.
+$pnc{'p_cont'}{'javascript'}                  Javascript in HTML header.
+$pnc{'p_cont'}{'js_src'}                      Javascript source file to be loaded.
+$pnc{'p_cont'}{'center_content'}              Page body HTML content, 500px wide.
+
+--- GENERATED SUBMENU ---
+$pnc{'submenu'}[[ORDER]]{'name'}              Name of submenu entry.
+$pnc{'submenu'}[[ORDER]]{'ID'}                ID of subpage. (Local to this parent page.)
+$pnc{'submenu'}[[ORDER]]{'locked'}            Set to 1 if this page requires login.
+                                              [ORDER] is a positive integer menu position.
+$pnc{'current_sub'}                           ID of current subpage.
+
+--- COOKIE DIRECTIVES ---
+$pnc{'cookies'}{'[COOKIE_NAME]'}{'value'}     Value of the cookie COOKIE_NAME to be set.
+$pnc{'cookies'}{'[COOKIE_NAME]'}{'expires'}   Expiration time of cookie COOKIE_NAME to set.
+                                              (Use 0 for session cookie and
+                                              CGI::Tiny::epoch_to_date(0) to delete cookie.)

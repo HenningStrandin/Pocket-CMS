@@ -1,0 +1,66 @@
+<!-------------- POCKET-CMS -----------------------------------------
+
+A tiny web content management system.
+
+Homepage: <GitHub repo>
+
+Copyright (C) 2020 Henning Strandin (henning.strandin@proton.me)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+See <https://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------->
+
+<html>
+  <head>
+    <title><: $title :></title>
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link rel="stylesheet" href="main_style.css">
+    
+    <style>
+      <: $style :>
+    </style>
+    
+    <script <: $js_src :>>
+    </script>
+    
+    <script type="text/javascript">
+      <: $javascript :>
+    </script>
+    
+  </head>
+  
+  <body>
+
+     <table>
+       <tr>
+	 <td style="width: 200px; vertical-align: top; background-color: #DAE3F1; border: 1px solid; border-radius: 8px; border-collapse: collapse;">
+	   <table style="width: 199px; table-layout: fixed;">
+	     <tr><td style="font-size: 1.3em; color: #495D7C"><br><b>Example<br>Homepage</b></td></tr>
+	     <tr><td><hr></td></tr>
+	     <tr><td><div class="main_menu"><: $main_menu :></div></td></tr>
+	     <tr><td><hr></td></tr>
+	     <tr><td style="font-size: 1.3em"><: $loggin :></td></tr>
+	   </table>
+	 </td>
+	 <td style="left; vertical-align: top; min-width: 520px; max-width: 900px;">
+	   <h2><: $head :></h2>
+	   <hr>
+	   <: $center_content :>
+	 </td>
+       </tr>
+     </table>
+   
+  </body>
+</html>

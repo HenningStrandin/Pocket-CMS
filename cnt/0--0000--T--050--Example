@@ -1,0 +1,42 @@
+# ----- POCKET-CMS -----
+#
+# A tiny web content management system.
+#
+# Homepage: <GitHub repo>
+#
+# Copyright (C) 2020 Henning Strandin (henning.strandin@proton.me)
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# See <https://www.gnu.org/licenses/>.
+
+sub page_content {
+    my %pnc;
+    
+    $pnc{'p_cont'}{'title'} = q{Pocket-CMS Example Page};
+    $pnc{'p_cont'}{'head'} = q{Pocket-CMS Example Page};
+    $pnc{'p_cont'}{'center_content'} = q{
+	<p>This is an example web page delivered by Pocket-CMS. Pocket-CMS is a web content management system made up of less than 200 lines of perl code in a CGI script. It has no front-end for creating content, web pages are perl functions loaded from content files (like this one). It uses no sessions and visitors are given no cookies. It provides no special means for logging or analyzing traffic. It's basically a CMS for people who don't care.</p>
+	
+	<div style="float: right; padding: 10px;">
+	<img src="images/Pocket-CMS-logo.jpg" alt="Pocket-CMS logo" style="width: 200px; border-radius: 8px;">
+        </div>
+
+	<p>Pocket-CMS was quaintly hand-coded without AI-assistance.</p>
+
+	<p>Pocket-CMS comes with a blogging module (162 lines of code) with no feedback functionality and no built-in way to analyze traffic. It does paginate and create an index, though.</p>
+
+	<p>Pocket-CMS is <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">licenced under GPL 3.0</a></p>
+    };
+    
+    return (\%pnc);
+}
+1;
