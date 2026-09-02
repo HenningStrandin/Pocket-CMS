@@ -41,8 +41,8 @@ INSTALLATION
 ------------
 1. Clone or download this repository.
 2. Ensure Perl and the required modules are installed.
-3. Ensure your web server executes *.cgi files as CGI scripts in the
-directory where you place the Pocket-CMS files.
+3. Ensure your web server executes *.cgi files as CGI scripts in the directory
+   where you place the Pocket-CMS files.
 4. Move the Pocket-CMS files there.
 5. Make index.cgi and next-ID.pl executable.
 
