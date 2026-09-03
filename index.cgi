@@ -28,6 +28,9 @@ use CGI::Tiny;
 use Text::Xslate qw(mark_raw);
 
 cgi {
+    # "Password" for showing hidden pages. (Not secure!)
+    my $pw = "showme";
+
     my $cgi = $_;
     my ($me) = $0 =~ /\/([^\/]*)$/;   # Name of this script. Use $me in all local URLs.
     my $cnt_path = 'cnt';         # Folder for content files, relative to main script.
@@ -36,7 +39,7 @@ cgi {
     my $logged_in =
 	(defined($cgi->cookie("$me-logged_in")) && !(defined($cgi->param('loggin')) && $cgi->param('loggin') eq 'logout'))
 	||
-	(defined($cgi->param('loggin')) && $cgi->param('loggin') eq 'qless')
+	(defined($cgi->param('loggin')) && $cgi->param('loggin') eq $pw)
 	? 1
 	: 0;
     
