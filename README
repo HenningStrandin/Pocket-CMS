@@ -126,7 +126,8 @@ AUTHENTICATION -- NO SUCH THING!
 Pages can be hidden from regular visitors and displayed only when the "password"
 is entered. This is meant as a staging area and for the convenience of the
 visitors, it's not secure in any way what so ever. Control the visibility of the
-page with the leading 0 or 1 of the file name.
+page with the leading 0 or 1 of the file name. Set the "password" in the $pw
+variable in index.cgi.
 
 TEMPLATING
 ----------
