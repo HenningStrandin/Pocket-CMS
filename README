@@ -124,12 +124,13 @@ $pnc{'p_cont'}{'js_src'}                      Javascript source file to be
                                               loaded.
 $pnc{'p_cont'}{'center_content'}              Page body HTML content.
 
-$pnc{'submenu'}[[ORDER]]{'name'}              Name of submenu entry.
+$pnc{'submenu'}[[ORDER]]{'name'}              Name of submenu entry. [ORDER] is
+                                              the integer top-down menu
+                                              position.
 $pnc{'submenu'}[[ORDER]]{'ID'}                ID of subpage. (Local to this
                                               parent page.)
 $pnc{'submenu'}[[ORDER]]{'locked'}            Set to 1 if this page is hidden
-                                              behind "login." [ORDER] is a
-                                              positive integer menu position.
+                                              behind "login."
 $pnc{'current_sub'}                           ID of current subpage.
 
 $pnc{'cookies'}{'[COOKIE_NAME]'}{'value'}     Value of the cookie COOKIE_NAME to
