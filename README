@@ -4,15 +4,29 @@ POCKET-CMS v. 1
 
 DESCRIPTION
 -----------
-Pocket-CMS is a web content management system made up of less than 200 lines of
-Perl code in a CGI script (plus a couple of libraries). Web pages are the output
-of Perl functions provided by content files. It uses no sessions and visitors
-are given no cookies by default. It provides no special means for logging or
-analyzing traffic and doesn't aid with SEO.
+Pocket-CMS is a web content management system intended for a single homepage
+creator and manager who wants a framework with dynamic menus, that allows
+dynamic content, and who is happy to create content in Emacs over SSH or in some
+other independent way.
 
-Pocket-CMS comes with a blogging module (162 lines of code) with no feedback
-functionality and no built-in way to analyze traffic. It does paginate and
-create an index, though. It also serves as an example of a dynamic web page.
+The CMS is made up of less than 200 lines of Perl code in a CGI script (plus a
+couple of libraries). Web pages are the output of Perl functions provided by
+content files, so content is dynamic by default.
+
+Pocket-CMS never writes to the file system and doesn't require write access.
+(Content creation is done independently, e.g. with Emacs over SSH.)
+
+The CMS uses no sessions and regular visitors are given no cookies by
+default (but the CMS handles any cookies for pages/modules). It provides no
+special means for logging or analyzing traffic and doesn't aid with SEO.
+
+Pocket-CMS comes with a tiny blogging module (162 lines of code) with no
+feedback functionality and no built-in way to analyze traffic. It does paginate
+and create an index, though. It also serves as an example of a dynamic web page.
+
+Pocket-CMS and the blogging module go well with Emacs Org mode, I find. It
+provides the simplest, dumbest staging area imaginable for pages "under
+construction."
 
 Example site: https://henningstrandin.com
 
@@ -27,6 +41,7 @@ FEATURES
 - Uses Text::Xslate for page templates.
 - Styling with CSS.
 - Pages can be visible or hidden.
+- Doesn't require write access to the file system.
 - No built-in analytics.
 - No built-in SEO support.
 - A healthy "don't care" attitude.
