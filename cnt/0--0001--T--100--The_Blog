@@ -97,7 +97,13 @@ sub page_content {
 
 	$blog_body = "<div style=\"font-family: Monospace; font-size: 1.1em; font-weight: bold;\">INDEX (A - Z)</div>\n";
 	$blog_body .= "<p style=\"font-size: 1.1em; line-height: 190%\">";
-	foreach my $bn (sort keys %name_to_ID){
+	foreach my $bn (sort {
+	    my $a_stripped = $a;
+	    my $b_stripped = $b;
+	    $a_stripped =~ s/^(the|a|an)\s+//i;
+	    $b_stripped =~ s/^(the|a|an)\s+//i;
+	    lc $a_stripped cmp lc $b_stripped
+			} keys %name_to_ID){
 	    $blog_body .= "- <a href=\"" . $caller . "?page=" . $me . "&subpage=" . $bn . "\">" . $bn . "</a><br>\n";
 	}
 	$blog_body .= "</p>";
