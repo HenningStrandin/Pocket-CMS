@@ -34,6 +34,7 @@ cgi {
     my $cgi = $_;
     my ($me) = $0 =~ /\/([^\/]*)$/;   # Name of this script. Use $me in all local URLs.
     my $cnt_path = 'cnt';         # Folder for content files, relative to main script.
+    my $css_version = (stat('main_style.css'))[9];
     
     ### CHECK IF LOGGED IN ###
     my $logged_in =
@@ -182,6 +183,7 @@ cgi {
     my $tx = Text::Xslate->new(type => 'html');
     $cgi->render(html => $tx->render('index.tmpl',{
 	main_menu => mark_raw($main_menu),
+	css_version => $css_version,
 	loggin => mark_raw($loggin),
 	title => mark_raw($pnc->{'p_cont'}{'title'}),
 	style => mark_raw($pnc->{'p_cont'}{'style'}),
