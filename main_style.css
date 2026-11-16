@@ -127,7 +127,7 @@ pre
 }
 
 @media (max-width: 760px) {
-    table, tr, td {
+    table.layout, table.layout > tbody > tr, table.layout > tbody > tr > td {
         display: block;
         box-sizing: border-box;
         width: 100% !important;
@@ -135,7 +135,11 @@ pre
         max-width: none !important;
     }
 
-    td {
+    table.layout td {
         padding: 10px;
+    }
+
+    table.layout td > table {
+        width: 100% !important;
     }
 }
