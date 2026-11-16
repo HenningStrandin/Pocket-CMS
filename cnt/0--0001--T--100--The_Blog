@@ -95,8 +95,8 @@ sub page_content {
     if ($sub_ID eq 'Index'){
 	$current_sub = $sub_ID;
 
-	$blog_body = "<div style=\"font-family: Monospace; font-size: 1.1em; font-weight: bold;\">INDEX (A - Z)</div>\n";
-	$blog_body .= "<p style=\"font-size: 1.1em; line-height: 190%\">";
+	$blog_body = "<div style=\"font-family: Monospace; font-size: 1.1rem; font-weight: bold;\">INDEX (A - Z)</div>\n";
+	$blog_body .= "<p style=\"font-size: 1.1rem; line-height: 190%\">";
 	foreach my $bn (sort {
 	    my $a_stripped = $a;
 	    my $b_stripped = $b;
@@ -135,8 +135,8 @@ sub page_content {
 	my ($current_sub_order) = $page_ID_to_order{$current_sub};
 	
 	### POPULATE PAGE BODY ###
-	$blog_body = "<span style=\"font-size: 1.1em; font-family: Monospace; font-weight: bold; line-height: 140%;\">ON THIS PAGE</span>\n";
-	$blog_body .= "<p style=\"font-size: 1em\">\n";
+	$blog_body = "<span style=\"font-size: 1.1rem; font-family: Monospace; font-weight: bold; line-height: 140%;\">ON THIS PAGE</span>\n";
+	$blog_body .= "<p style=\"font-size: 1rem\">\n";
 	for (my $i = @{$blog_pages[$current_sub_order]} - 1; $i >=0; $i--){
 	    $blog_body .= "<a href=\"#" . $blog{$blog_pages[$current_sub_order][$i]}{'name'} . "\"> - " . $blog{$blog_pages[$current_sub_order][$i]}{'name'} . "</a><br>\n";
 	}
@@ -155,24 +155,24 @@ sub page_content {
 	    my $pdf_path = "$cnt_path/blog/$pdf_file";
 	    my $pdf_html = "";
 	    if (-e $pdf_path) {
-		$pdf_html = "<a href=\"$pdf_path\" target=\"_blank\">[PDF]</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		$pdf_html = "&nbsp;&nbsp;<a href=\"$pdf_path\" target=\"_blank\">[PDF]</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 	    }
 	    
 	    $blog_body .= "<h1><a name=\"" . $blog{$blog_pages[$current_sub_order][$i]}{'name'} . "\"></a>" . $blog{$blog_pages[$current_sub_order][$i]}{'name'} . "</h1>\n";
-	    $blog_body .= "<span style=\"font-size: 1em;\">$blog{$blog_pages[$current_sub_order][$i]}{'date'}</span><span style=\"font-family: Monospace; font-size: 1.2em; font-weight: bold;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+	    $blog_body .= "<span style=\"font-size: 0.8rem;\">$blog{$blog_pages[$current_sub_order][$i]}{'date'}</span><span style=\"font-family: Monospace; font-size: 0.8rem; font-weight: bold;\">";
 	    $blog_body .= $pdf_html;
-	    $blog_body .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"" . $caller . "?page=" . $me . "&subpage=" . $blog{$blog_pages[$current_sub_order][$i]}{'name'} . "\">[PERMANENT LINK]</a></span><br>\n";
+	    $blog_body .= "&nbsp;&nbsp;<a href=\"" . $caller . "?page=" . $me . "&subpage=" . $blog{$blog_pages[$current_sub_order][$i]}{'name'} . "\">[PERMANENT LINK]</a></span><br>\n";
 	    $blog_body .= "<br>\n";
 	    $blog_body .= read_file("$cnt_path/blog/$blog{$blog_pages[$current_sub_order][$i]}{'file'}") . "\n";
-	    $blog_body .= "<div style=\"font-family: Monospace; font-size: 1.2em; font-weight: bold; text-align: center;\"><a href=\"#\">[UP]</a></div>\n";
+	    $blog_body .= "<div style=\"font-family: Monospace; font-size: 1.2rem; font-weight: bold; text-align: center;\"><a href=\"#\">[UP]</a></div>\n";
 	    $blog_body .= "<br>\n<hr style=\"width:50%;\"><br>\n\n";
 	}
 	
 	if ($current_sub_order == 0){
-	    $blog_body .= "<div style=\"font-family: Monospace; font-size: 1.2em; font-weight: bold; text-align: center;\"><a href=\"" . $caller . "?page=" . $me . "\">[HOME]</a></div>\n";
+	    $blog_body .= "<div style=\"font-family: Monospace; font-size: 1.2rem; font-weight: bold; text-align: center;\"><a href=\"" . $caller . "?page=" . $me . "\">[HOME]</a></div>\n";
 	}
 	else {
-	    $blog_body .= "<div style=\"font-family: Monospace; font-size: 1.2em; font-weight: bold; text-align: center;\"><a href=\"" . $caller . "?page=" . $me . "&subpage=P" . ($current_sub_order - 1) . "\">[NEXT]</a></div>\n";
+	    $blog_body .= "<div style=\"font-family: Monospace; font-size: 1.2rem; font-weight: bold; text-align: center;\"><a href=\"" . $caller . "?page=" . $me . "&subpage=P" . ($current_sub_order - 1) . "\">[NEXT]</a></div>\n";
 	}
     }
     
