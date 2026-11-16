@@ -126,6 +126,7 @@ pre
 @media (max-width: 760px) {
     table, tr, td {
         display: block;
+        box-sizing: border-box;
         width: 100% !important;
         min-width: 0 !important;
         max-width: none !important;
