@@ -22,6 +22,9 @@ See <https://www.gnu.org/licenses/>. */
     --mcolor: #495D7C;
 }
 
+html {
+    font-size: clamp(16px, 0.9rem + 0.45vw, 20px);
+}
 
 body {
     background-color: white;
@@ -52,7 +55,7 @@ tr {
 th {
     border: none;
     font-weight: normal;
-    font-size: 1.3em;
+    font-size: 1.3rem;
     padding: 15px;
     text-align: left;
 }
@@ -60,13 +63,13 @@ th {
 td {
     border: none;
     font-weight: normal;
-    font-size: 1.3em;
+    font-size: 1.3rem;
     padding: 15px;
     text-align: left;
 }
 
 p {
-    font-size: 1.3em;
+    font-size: 1.3rem;
 }
 
 a {
@@ -80,7 +83,7 @@ hr {
 }
 
 ul {
-    font-size: 1.3em;
+    font-size: 1.3rem;
 }
 
 li {
@@ -90,23 +93,23 @@ li {
 
 textarea  
 {  
-    font-size: 1.3em;
+    font-size: 1.3rem;
 }
 
 pre
 {  
-    font-size: 1.3em;
+    font-size: 1.3rem;
 }
 
 .main_menu {
     font-family: Monospace;
-    font-size: 1.4em;
+    font-size: 1.4rem;
     line-height: 1.6;
 }
 
 .sub_menu {
     font-family: Monospace;
-    font-size: 0.85em;
+    font-size: 0.85rem;
     line-height: 1.3;
 }    
 
@@ -118,4 +121,17 @@ pre
 
 .img_left {
     display: block;
+}
+
+@media (max-width: 760px) {
+    table, tr, td {
+        display: block;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+    }
+
+    td {
+        padding: 10px;
+    }
 }
