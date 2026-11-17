@@ -30,7 +30,7 @@ sub page_content {
 	<img src="images/Pocket-CMS-logo.jpg" alt="Pocket-CMS logo" style="width: 200px; border-radius: 8px;">
         </div>
 
-	<p>Pocket-CMS was quaintly hand-coded without AI-assistance.</p>
+	<p>Pocket-CMS was quaintly hand-coded without AI-assistance (except for some CSS tweaking).</p>
 
 	<p>Pocket-CMS comes with a blogging module (162 lines of code) with no feedback functionality and no built-in way to analyze traffic. It does paginate and create an index, though.</p>
 
